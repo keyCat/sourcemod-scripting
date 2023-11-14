@@ -1,0 +1,99 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    // Create Compiled File Directory
+    {
+      "label": "Create Compiled File Directory (Project)",
+      "type": "shell",
+      "windows": {
+        "command": "cmd",
+        "args": [
+          "/c",
+          "if not exist \\\"${fileDirname}\\..\\compiled\\\" mkdir \\\"${fileDirname}\\..\\compiled\\\""
+        ]
+      },
+      "linux": {
+        "command": "mkdir",
+        "args": ["-p", "${fileDirname}/../compiled"]
+      },
+      "osx": {
+        "command": "mkdir",
+        "args": ["-p", "${fileDirname}/../compiled"]
+      },
+      "group": "none",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": false,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    // SourcePawn Compiler 1.11
+    {
+      "label": "SourcePawn Compiler 1.11 (Project)",
+      "type": "shell",
+      "linux": {
+        "command": "${workspaceFolder}/sourcemod/1.11.0/spcomp64_linux"
+      },
+      "osx": {
+        "command": "${workspaceFolder}/.vscode/scripts/docker/spcomp-task-entry.sh",
+        "args": ["1.11.0", "${workspaceFolder}", "${relativeFileDirname}", "${fileBasenameNoExtension}"]
+      },
+      "windows": {
+        "command": "${workspaceFolder}/sourcemod/1.11.0/spcomp64.exe"
+      },
+      "args": [
+        "${file}",
+        "-o${fileDirname}/../compiled/${fileBasenameNoExtension}.smx",
+        "-i${workspaceFolder}/includes/1.11"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [
+        // warnings
+        {
+          "owner": "external",
+          "fileLocation": "absolute",
+          "severity": "warning",
+          "pattern": {
+            "regexp": "^(.*)\\((\\d+)\\)\\s+:\\s+(warning)\\s+(\\d+):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "code": 4,
+            "message": 5
+          }
+        },
+        // errors and fatal errors
+        {
+          "owner": "external",
+          "fileLocation": "absolute",
+          "severity": "error",
+          "pattern": {
+            "regexp": "^(.*)\\((\\d+)\\)\\s+:\\s+(error|fatal error)\\s+(\\d+):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "code": 4,
+            "message": 5
+          }
+        }
+      ],
+      "dependsOn": ["Create Compiled File Directory (Project)"],
+      "dependsOrder": "sequence"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+.DS_Store
+*.bak
+.idea/
+cmake-build-*/
+*.iws
+out/
+.idea_modules/
+atlassian-ide-plugin.xml
